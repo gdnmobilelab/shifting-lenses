@@ -24,7 +24,7 @@ class Wrapper extends Component {
 function createLenses() {
 
     return <AppShell>
-        <ShiftingLenses title="Inauguration">
+        <ShiftingLenses title="Inauguration" activeIndex={2}>
             <Lens name="Social view" background="#66AA99" />
             <LiveblogLens name="Live blog" />
             <LiveVideoLens name="Live video" />

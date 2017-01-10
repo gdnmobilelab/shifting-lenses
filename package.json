@@ -6,12 +6,14 @@
   "dependencies": {
     "autoprefixer": "^6.6.1",
     "colors": "^1.1.2",
+    "fontmin": "^0.9.6",
     "gobble": "^0.12.0",
     "gobble-cli": "^0.8.0",
     "gobble-flatten": "^1.0.1",
     "gobble-postcss": "^0.3.0",
     "gobble-sass": "^0.5.0",
     "history": "^4.5.0",
+    "immutable": "^3.8.1",
     "inferno": "^1.1.1",
     "inferno-component": "^1.0.5",
     "inferno-create-element": "^1.0.5",
@@ -19,6 +21,7 @@
     "inferno-router": "^1.0.5",
     "inferno-server": "^1.0.5",
     "node-fetch": "^1.6.3",
+    "opentype.js": "^0.6.8",
     "rollup-plugin-alias": "^1.2.0",
     "rollup-plugin-buble": "^0.15.0",
     "rollup-plugin-commonjs": "^7.0.0",
@@ -32,12 +35,14 @@
     "stream": "^0.0.2",
     "treo": "^0.5.1",
     "treo-promise": "^1.0.0",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "webfont": "^7.0.2"
   },
   "devDependencies": {
     "gobble-rollup": "^0.36.0"
   },
   "scripts": {
-    "dev": "node dev.js"
+    "dev": "node dev.js",
+    "make-font": "webfont material-icons/*.svg -d src/static -f icons --formats ttf"
   }
 }

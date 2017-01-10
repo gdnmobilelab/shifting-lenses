@@ -49,7 +49,7 @@ export default class VideoNotificationSignup extends Component {
     }
 
     componentDidMount() {
-        if (browser.iOS() === true) {
+        if (browser().iOS === true) {
             this.setState({
                 show: true
             })

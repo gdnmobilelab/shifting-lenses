@@ -1,6 +1,7 @@
-import Component from 'inferno-component';
+import ImmutableComponent from '../immutable-component';
 import LensHeader from './lens-header';
 import {PageTitle} from '../page-title';
+import Immutable from 'immutable';
 
 const TOUCH_INTERACTION_STATE = {
     UNKNOWN: 0,
@@ -13,13 +14,14 @@ const SWIPE_DIRECTION = {
     RIGHT: 1
 }
 
-export default class ShiftingLenses extends Component {
+export default class ShiftingLenses extends ImmutableComponent {
 
-    constructor() {
+    constructor(props) {
         super();
-        this.state = {
-            activeIndex: 1
-        }
+
+        this.immutableState = Immutable.Map({
+            activeIndex: props.activeIndex || 1
+        });
 
         this.onLensScroll = this.onLensScroll.bind(this);
         this.onTouchStart = this.onTouchStart.bind(this);
@@ -30,15 +32,18 @@ export default class ShiftingLenses extends Component {
 
     render() {
         
-        let lensTransform = String(this.state.activeIndex * -100) + "vw";
-        let headerIndex = this.state.activeIndex;
+        let activeIndex = this.immutableState.get("activeIndex");
+        let lensTransform = String(activeIndex * -100) + "vw";
+        let headerIndex = activeIndex;
 
-        if (this.state.currentSwipePosition) {
+        let currentSwipePosition = this.immutableState.get("currentSwipePosition");
+
+        if (currentSwipePosition) {
             // Being a little tricky here, using vw above so that the server
             // doesn't crash when we try to use window.innerWidth, but we want
             // to use px here.
-            let initialTransform = (-window.innerWidth * this.state.activeIndex);
-            let diff = this.state.currentSwipePosition.x - this.state.initialSwipePosition.x;
+            let initialTransform = (-window.innerWidth * activeIndex);
+            let diff = currentSwipePosition.get("x") - this.immutableState.getIn(["initialSwipePosition","x"]);
             initialTransform += diff;
             lensTransform = String(initialTransform) + 'px';
 
@@ -53,17 +58,21 @@ export default class ShiftingLenses extends Component {
         let touchMoveEvent = null;
         let willChange = false;
 
-        if (this.state.animationDuration) {
-            lensContainerStyles.transition = `transform ${this.state.animationDuration}s linear`;
+        let animationDuration = this.immutableState.get("animationDuration");
+
+        if (animationDuration) {
+            lensContainerStyles.transition = `transform ${animationDuration}s linear`;
         }
 
-        if (this.state.interactionState === TOUCH_INTERACTION_STATE.SWIPE) {
+        let interactionState = this.immutableState.get("interactionState");
+
+        if (interactionState === TOUCH_INTERACTION_STATE.SWIPE) {
             lensContainerClass += ' no-touching';
             willChange = true;
             lensContainerStyles['will-change'] = 'transform';
         }
 
-        if (this.state.interactionState !== TOUCH_INTERACTION_STATE.SCROLL) {
+        if (interactionState !== TOUCH_INTERACTION_STATE.SCROLL) {
             // if we're scrolling then we don't need to listen to touchmove - maybe
             // a performance benefit to not doing it?
             touchMoveEvent = this.onTouchMove;
@@ -71,10 +80,10 @@ export default class ShiftingLenses extends Component {
 
         let titleElement = this.props.title ? <PageTitle title={this.props.title} /> : null
 
-        if (this.props.children[this.state.activeIndex]) {
-            console.log('setting active')
-            this.props.children[this.state.activeIndex].props.active = true;
-        }
+        this.props.children.forEach((child, i) => {
+            child.props.active = activeIndex === i;
+        });
+
 
         return <div
             class='shifting-lenses'
@@ -87,7 +96,7 @@ export default class ShiftingLenses extends Component {
                 lenses={this.props.children}
                 activeIndex={headerIndex}
                 onSelected={this.setIndex}
-                animationDuration={this.state.animationDuration}
+                animationDuration={animationDuration}
                 willChange={willChange}
             />
            
@@ -104,10 +113,10 @@ export default class ShiftingLenses extends Component {
     }
 
     setIndex(newIndex) {
-        this.setState({
+        this.setImmutableState(this.immutableState.merge({
             animationDuration: 0.1,
             activeIndex: newIndex
-        })
+        }))
     }
 
     addScrollListenersToLenses() {
@@ -127,11 +136,11 @@ export default class ShiftingLenses extends Component {
     
     onLensScroll(e) {
         // If the lens starts scrolling, we don't want to swipe and scroll at the same time.
-        this.setState({
+        this.setImmutableState(this.immutableState.merge({
             interactionState: TOUCH_INTERACTION_STATE.SCROLL,
             initialSwipePosition: null,
             currentSwipePosition: null
-        })
+        }))
        
         // We can immediately remove these listeners in a bid to improve performance.
         this.removeScrollListenersFromLenses();
@@ -143,32 +152,30 @@ export default class ShiftingLenses extends Component {
         this.addScrollListenersToLenses();
         // document.removeEventListener('touchmove', this.preventDefault);
 
-        this.setState({
+        this.setImmutableState(this.immutableState.merge({
             interactionState: TOUCH_INTERACTION_STATE.UNKNOWN,
-            initialSwipePosition: {
+            initialSwipePosition: Immutable.Map({
                 x: e.touches[0].screenX,
                 y: e.touches[0].screenY
-            },
+            }),
             last5Touches: null,
             animationDuration: 0
-        })
+        }))
     }
 
     onTouchEnd(e) {
 
-        // this.lensContainerEl.classList.remove('no-touching');
-        
-
-        if (this.state.interactionState !== TOUCH_INTERACTION_STATE.SWIPE) {
+       
+        if (this.immutableState.get("interactionState") !== TOUCH_INTERACTION_STATE.SWIPE) {
             return;
         }
 
        
         this.removeScrollListenersFromLenses();
 
-        let percentOver = (e.changedTouches[0].screenX - this.state.initialSwipePosition.x) / window.innerWidth;
+        let percentOver = (e.changedTouches[0].screenX - this.immutableState.getIn(["initialSwipePosition","x"])) / window.innerWidth;
        
-        let newIndex = this.state.activeIndex;
+        let newIndex = this.immutableState.get("activeIndex");
 
         let animationDuration = 0.1;
 
@@ -180,23 +187,26 @@ export default class ShiftingLenses extends Component {
             indexChange = 1;
         }
 
-        if (this.state.last5Touches) {
-            let firstTouch = this.state.last5Touches[0];
+        let last5Touches = this.immutableState.get("last5Touches");
+
+        if (last5Touches) {
+            console.log(last5Touches)
+            let firstTouch = last5Touches.get(0);
             let lastTouch = {
                 x: e.changedTouches[0].screenX,
                 y: e.changedTouches[0].screenY,
                 time: e.timeStamp
             };
 
-            let timeDiff = lastTouch.time - firstTouch.time;
-            let xDiff = lastTouch.x - firstTouch.x;
-            let yDiff = lastTouch.y - firstTouch.y;
+            let timeDiff = lastTouch.time - firstTouch.get("time");
+            let xDiff = lastTouch.x - firstTouch.get("x");
+            let yDiff = lastTouch.y - firstTouch.get("y");
 
             if (timeDiff < 100 && Math.abs(xDiff) > 0 && Math.abs(yDiff) < 30) {
                 indexChange = xDiff > 0 ? -1 : 1;
             }
 
-            console.log('ts', timeDiff, xDiff, yDiff, this.state.last5Touches.length + 1)
+            console.log('ts', timeDiff, xDiff, yDiff, last5Touches.length + 1)
         }
 
         if (indexChange == -1 && newIndex > 0 ||
@@ -205,80 +215,83 @@ export default class ShiftingLenses extends Component {
             }
 
 
-        this.setState({
+        this.setImmutableState(this.immutableState.merge({
             initialSwipePosition: null,
             currentSwipePosition: null,
             last5Touches: null,
             activeIndex: newIndex,
             animationDuration: animationDuration,
             interactionState: TOUCH_INTERACTION_STATE.UNKNOWN
-        })
+        }))
     }
 
     checkForInteractionState(e) {
         let newX = e.touches[0].screenX;
-        let diff = Math.abs(this.state.initialSwipePosition.x - newX);
+        let diff = Math.abs(this.immutableState.getIn(["initialSwipePosition", "x"]) - newX);
 
         if (diff > 10) {
             // this.lensContainerEl.classList.add('no-touching');
             // document.addEventListener('touchmove', this.preventDefault);
-            this.setState({
-                interactionState: TOUCH_INTERACTION_STATE.SWIPE
-            });
+            this.setImmutableState(this.immutableState.set("interactionState", TOUCH_INTERACTION_STATE.SWIPE));
         }
     }
 
     onTouchMove(e) {
         e.stopPropagation();
-        if (this.state.interactionState === TOUCH_INTERACTION_STATE.SCROLL) {
+        let interactionState = this.immutableState.get("interactionState");
+
+        if (interactionState === TOUCH_INTERACTION_STATE.SCROLL) {
             return
         }
 
-        if (this.state.interactionState === TOUCH_INTERACTION_STATE.UNKNOWN) {
+        if (interactionState === TOUCH_INTERACTION_STATE.UNKNOWN) {
             this.checkForInteractionState(e);
         }
 
-        if (this.state.interactionState === TOUCH_INTERACTION_STATE.SWIPE) {
+        if (interactionState === TOUCH_INTERACTION_STATE.SWIPE) {
 
             let newX = e.touches[0].screenX;
 
             // We record the last 5 touches, in order to calculate speed
             // and direction on touchend
 
-            let last5Touches = this.state.last5Touches || [];
+            let last5Touches = this.immutableState.get("last5Touches") || new Immutable.List();
 
-            last5Touches.push({
+            last5Touches = last5Touches.push(new Immutable.Map({
                 x: e.touches[0].screenX,
                 y: e.touches[0].screenY,
                 time: e.timeStamp
-            });
+            }));
 
-            while (last5Touches.length > 5) {
-                last5Touches.shift();
+            while (last5Touches.size > 5) {
+                last5Touches = last5Touches.shift();
             }
 
+        
 
-            let diff = this.state.initialSwipePosition.x - newX;
+
+            let initialSwipeX = this.immutableState.getIn(["initialSwipePosition", "x"]);
+            let diff = initialSwipeX - newX;
            
-            if (this.state.activeIndex === 0 && diff < 0 ||
-                this.state.activeIndex === this.props.children.length - 1 && diff > 0
+            let activeIndex = this.immutableState.get("activeIndex");
+
+            if (activeIndex === 0 && diff < 0 ||
+                activeIndex === this.props.children.length - 1 && diff > 0
             ) {
 
                 // add a "rubber banding" effect if the user is trying to swipe
                 // in the wrong direction
 
-                newX = this.state.initialSwipePosition.x - (diff * 0.05);
+                newX = initialSwipeX - (diff * 0.05);
             }
 
-            let newState = {
+            this.setImmutableState(this.immutableState.merge({
                 currentSwipePosition: {
                     x: newX,
                     y: e.touches[0].screenY
                 },
                 last5Touches: last5Touches
-            }
-
-            this.setState(newState);
+            }));
 
             e.stopPropagation();
             e.preventDefault();

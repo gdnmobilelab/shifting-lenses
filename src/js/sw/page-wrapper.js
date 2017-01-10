@@ -42,7 +42,7 @@ export default function createWrapper(specifiedProps, contents) {
             navigator.serviceWorker.register('${props.prefix}/sw.js', {scope: '${props.prefix}/'});
         }
     </script>
-    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+    <script>document.write('<script src="//alastairtest-lr.ngrok.io/livereload.js?snipver=1"></' + 'script>')</script>
 
     </html>`
 }

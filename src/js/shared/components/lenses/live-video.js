@@ -1,38 +1,19 @@
 import Lens from '../shifting-lenses/lens';
 import Component from 'inferno-component';
-
-
+import Proportional from '../proportional';
+import config from '../../../config';
+import browser from '../../util/browser';
+import LivestreamVideo from '../blocks/livestream-video';
 
 export default class LiveVideoLens extends Component {
     
     render() {
         return <div class='lens live-video-lens'>
-           <h5><span class='live-blob'/> Live video</h5>
-            <video
-             ref={(v) => this.videoElement = v}
-             src='https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8'
-             playsinline
-             muted
-             preload="metadata"
-              />
+           <h5 class='video-header'><span class='live-blob'/> Live video</h5>
+            
+                <LivestreamVideo proportion={9/16} src='https://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4' play={this.props.active} />
+            
+            <p>Description of the live stream video.</p>
         </div>
-    }
-
-    componentWillUpdate(nextProps) {
-        if (!nextProps.active) {
-            this.videoElement.pause();
-        }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        
-        return true;
-    }
-
-    componentDidMount() {
-        document.body.addEventListener('touchend', () => {
-            //this.videoElement.play()
-        })
-        
     }
 }
