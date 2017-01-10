@@ -1,0 +1,7 @@
+{
+    "basePath": "/inauguration",
+    "pushkin":  {
+        "host": "https://alastairtest-node.ngrok.io",
+        "key": "USER_KEY"
+    }
+}

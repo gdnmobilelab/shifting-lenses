@@ -1,0 +1,104 @@
+$animation-duration: 300ms;
+
+#app-download {
+    position: fixed;
+    z-index:100;
+    width: 100%;
+    height: 100%;
+    perspective: 800px;
+    background: rgba(0,0,0,0.5);
+    animation-name: download-bg-in;
+    animation-duration: $animation-duration;
+    animation-fill-mode: forwards;
+
+    .inner {
+        background: #fff;
+        position: absolute;
+        top: 5vw;
+        left: 5vw;
+        width: 90vw;
+        height: calc(100% - 10vw);
+        animation-name: app-download-in;
+        animation-duration: $animation-duration;
+        animation-fill-mode: forwards;
+        box-sizing: border-box;
+        padding: 8vw;
+        font-family: 'Guardian Text Egyptian Web', serif;
+        font-weight: 100;
+        display: flex;
+        flex-direction: column;
+        overflow:hidden;
+        line-height: 1.3em;
+        // padding-top: 40vw;
+    }
+
+    .logo {
+        // width: 40vw;
+        // height: 40vw;
+        // display: block;
+        // margin: 0 auto;
+        // flex-shrink: 1;
+        flex-grow:10;
+        max-height: 40vw;
+        background: url('images/mobilelab-logo.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center top;
+        flex-shrink: 1;
+    }
+
+    .spacer {
+        flex-grow: 1;
+    }
+
+    h3 {
+        color: #0D6292;
+        font-weight: 700;
+        flex-grow: 0;
+        flex-shrink: 0;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    p {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .buttons {
+        text-align: center;
+    }
+    
+
+    button {
+        background: #2488B1;
+        color: #fff;
+        font-weight: 200;
+    }
+
+    button.primary {
+        background: #0D6292;
+        color: #fff;
+    }
+}
+
+@keyframes app-download-in {
+    0% {
+        transform: rotate3d(1,0,0,-50deg) translate3d(0,200px,50px);
+    }
+
+    100% {
+        transform: rotate3d(0,0,0,0deg) translate3d(0,0,0);
+    }
+}
+
+@keyframes download-bg-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,160 @@
+@import 'fonts.scss';
+
+body {
+    padding:0;
+    margin:0;
+}
+
+* {
+     user-select: none;
+     -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+p {
+    user-select: all;
+}
+
+#main {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100vw;
+    height: 100%;
+    display: flex;
+}
+
+#shell {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.shifting-lenses {
+    flex-grow: 1;
+    display:flex;
+    flex-direction: column;
+    overflow:hidden;
+    width: 100vw;
+
+    .header-container {
+        background: #0D6292;
+        flex-grow:0;
+    }
+
+    .header {
+        flex-grow: 0;
+        color: #fff;
+        font-family: 'Guardian Text Egyptian Web', serif;
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-align: center;
+        
+        transform: translateZ(0);
+
+        span {
+            padding: 15px 0;
+            display: inline-block;
+            width: 45vw;
+            cursor: pointer;
+        }
+    }
+
+    .lenses {
+        flex-grow:1;
+        position: relative;
+
+        &.no-touching .lens {
+            // There's always money in the banana stand
+            pointer-events: none;
+            -webkit-overflow-scrolling: auto;
+        }
+
+        &.no-touching {
+            pointer-events: none;
+            ::-webkit-scrollbar {
+                // Chrome doesn't hide the scrollbar from the original
+                // touch event, so we do it manually
+                background:rgba(0,0,0,0);
+            }
+        }
+    }
+
+    
+}
+
+.lens {
+    flex-grow:1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: 'Guardian Text Egyptian Web', serif;
+    font-size: 14px;
+    line-height: 1.5em;
+
+    h5 {
+        
+        border-bottom: 0.5px solid;
+        margin:0;
+        padding: 10px 15px;
+        font-size: 13px;
+        
+        font-weight: 700;
+    }
+
+    .live-blob {
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        border-radius: 6.5px;
+        display: inline-block;
+        margin-right: 7px;
+        animation-name: fadeinout;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+    }
+}
+
+.lens:nth-child(2) {
+    left: 100%;
+}
+
+.lens:nth-child(3) {
+    left: 200%;
+}
+
+@keyframes fadeinout {
+    0% {opacity: 1;}
+    50% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+.button-holder {
+    margin-top:15px;
+    &.right-align {
+        text-align: right;
+    }
+}
+
+button {
+    font-family: 'Guardian Text Egyptian Web', serif;
+    border-width: 0.5px;
+    border-color: transparent;
+    border-style: solid;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 2px;
+    cursor: pointer;
+
+    i.material-icons {
+        font-size: 14px;
+    }
+}
+
+
+@import 'live-video-lens.scss';
+@import 'liveblog-lens.scss';
+@import 'app-download.scss';

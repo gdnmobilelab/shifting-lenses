@@ -1,0 +1,37 @@
+.liveblog-lens {
+    background: #F5F4F5;
+    color: #3D3A4B;
+
+    .live-blob {
+        background: #B19994;
+    }
+
+    h5 {
+        color: #B19994;
+        border-bottom-color: #B19994;
+    }
+
+    div.notify-thing {
+        margin: 15px;
+        background: #B19994;
+        padding: 15px;
+        color: #fff;
+
+        p {
+            margin:0;
+        }
+
+        button {
+            background: #fff;
+            color: #B19994;
+            border-width: 0.5px;
+            border-color: transparent;
+
+            &:active {
+                color: #fff;
+                border-color: #fff;
+                background: transparent;
+            }
+        }
+    }
+}
