@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="267px" height="150px" viewBox="0 0 267 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: #B34F0C;">
+    <!-- Generator: Sketch 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard">
+            <g id="ic_play_circle_outline_black_24px" transform="translate(74.000000, 15.000000)">
+                <g id="Group">
+                    <polygon id="Shape" points="0 0 120 0 120 120 0 120"></polygon>
+                    <path d="M50,82.5 L80,60 L50,37.5 L50,82.5 Z M60,10 C32.4,10 10,32.4 10,60 C10,87.6 32.4,110 60,110 C87.6,110 110,87.6 110,60 C110,32.4 87.6,10 60,10 Z M60,100 C37.95,100 20,82.05 20,60 C20,37.95 37.95,20 60,20 C82.05,20 100,37.95 100,60 C100,82.05 82.05,100 60,100 Z" id="Shape" fill-opacity="0.4" fill="#FFFFFF"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
